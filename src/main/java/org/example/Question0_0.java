@@ -32,6 +32,18 @@ public class Question0_0 {
             }
         }
 
+        @Override
+        protected void setup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+            count = new HashMap<>();
+        }
+
+        @Override
+        protected void cleanup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+           /* for (String key : count.keySet()) {
+                context.write(new Text(key), new IntWritable(count.get(key)));
+            }*/
+        }
+
     }
 
 
