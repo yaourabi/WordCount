@@ -28,7 +28,11 @@ public class Question0_0 {
             for (String stringLoop : value.toString().split(" ")) {
                 stringLoop = stringLoop.replaceAll("\\s*,\\s*$", "");
                 stringLoop = stringLoop.trim();
-                context.write(new Text(stringLoop), new IntWritable(1));
+                if (count.containsKey(stringLoop)) {
+                    count.put(stringLoop, count.get(stringLoop) + 1);
+                } else {
+                    count.put(stringLoop, 1);
+                }
             }
         }
 
@@ -39,9 +43,9 @@ public class Question0_0 {
 
         @Override
         protected void cleanup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
-           /* for (String key : count.keySet()) {
+            for (String key : count.keySet()) {
                 context.write(new Text(key), new IntWritable(count.get(key)));
-            }*/
+            }
         }
 
     }
