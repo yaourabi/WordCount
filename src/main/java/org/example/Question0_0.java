@@ -25,7 +25,7 @@ public class Question0_0 {
         EMPTY_LINES_COUNTER,
     }
     public static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-        Map<String, Integer> count;
+        Map<String, Integer> wordCountMap;
         CustomCounter customCounter;
         Counter counter;
 
@@ -39,24 +39,24 @@ public class Question0_0 {
             for (String stringLoop : value.toString().split(" ")) {
                 stringLoop = stringLoop.replaceAll("\\s*,\\s*$", "");
                 stringLoop = stringLoop.trim();
-                if (count.containsKey(stringLoop)) {
-                    count.put(stringLoop, count.get(stringLoop) + 1);
+                if (wordCountMap.containsKey(stringLoop)) {
+                    wordCountMap.put(stringLoop, wordCountMap.get(stringLoop) + 1);
                 } else {
-                    count.put(stringLoop, 1);
+                    wordCountMap.put(stringLoop, 1);
                 }
             }
         }
 
         @Override
         protected void setup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
-            count = new HashMap<>();
+            wordCountMap = new HashMap<>();
             counter = context.getCounter(customCounter);
         }
 
         @Override
         protected void cleanup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
-            for (String key : count.keySet()) {
-                context.write(new Text(key), new IntWritable(count.get(key)));
+            for (String key : wordCountMap.keySet()) {
+                context.write(new Text(key), new IntWritable(wordCountMap.get(key)));
             }
         }
 
