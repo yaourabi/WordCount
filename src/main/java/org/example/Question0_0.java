@@ -10,6 +10,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -20,11 +21,21 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
 public class Question0_0 {
+    public enum CustomCounter {
+        EMPTY_LINES_COUNTER,
+    }
     public static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         Map<String, Integer> count;
+        CustomCounter customCounter;
+        Counter counter;
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            String line = value.toString().trim();
+            //check if line is empty and increment empty line counter
+            if(line.isEmpty()){
+                counter.increment(1);
+            }
             for (String stringLoop : value.toString().split(" ")) {
                 stringLoop = stringLoop.replaceAll("\\s*,\\s*$", "");
                 stringLoop = stringLoop.trim();
@@ -39,6 +50,7 @@ public class Question0_0 {
         @Override
         protected void setup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
             count = new HashMap<>();
+            counter = context.getCounter(customCounter);
         }
 
         @Override
